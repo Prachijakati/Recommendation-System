@@ -2,7 +2,6 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 
-# Sample dataset with movie titles and descriptions
 movies = {
     'title': ['Inception', 'Interstellar', 'The Matrix', 'The Dark Knight', 'Shutter Island'],
     'description': [
@@ -10,31 +9,25 @@ movies = {
         'A group of explorers travel through a wormhole in space.',
         'A hacker discovers the reality of his world is a simulation.',
         'Batman sets out to dismantle the remaining criminal organizations.',
-        'A detective investigates a psychiatric facility on an isolated island.'
+        'A detective investigates a psychiatric facility on an isolated island.' 
     ]
 }
 
-# Create a DataFrame from the movie data
 df = pd.DataFrame(movies)
 
-# Initialize the TF-IDF Vectorizer and remove stop words
 tfidf = TfidfVectorizer(stop_words='english')
 
-# Transform the movie descriptions into a TF-IDF matrix
 tfidf_matrix = tfidf.fit_transform(df['description'])
 
-# Compute the cosine similarity matrix between all movies
 cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
 
-# Function to get movie recommendations based on cosine similarity
 def get_movie_recommendations(title, cosine_sim=cosine_sim):
-    idx = df[df['title'] == title].index[0]  # Get index of the movie that matches the title
-    sim_scores = list(enumerate(cosine_sim[idx]))  # Get similarity scores for the movie
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)  # Sort scores
-    sim_scores = sim_scores[1:4]  # Get top 3 similar movies (ignoring the same movie)
-    movie_indices = [i[0] for i in sim_scores]  # Get indices of similar movies
-    return df['title'].iloc[movie_indices]  # Return the titles of similar movies
+    idx = df[df['title'] == title].index[0]  
+    sim_scores = list(enumerate(cosine_sim[idx])) 
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True) 
+    sim_scores = sim_scores[1:4]  
+    movie_indices = [i[0] for i in sim_scores]  
+    return df['title'].iloc[movie_indices]  
 
-# Get recommendations for the movie 'Inception'
 print("Recommended movies for 'Inception':")
 print(get_movie_recommendations('Inception'))
